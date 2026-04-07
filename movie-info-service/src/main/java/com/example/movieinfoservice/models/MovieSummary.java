@@ -1,9 +1,16 @@
 package com.example.movieinfoservice.models;
 
+// import javax.swing.text.Document;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collation = "movie_db")
 public class MovieSummary {
     private String id;
     private String title;
     private String overview;
+
+    @Id
 
     public String getId() {
         return id;
