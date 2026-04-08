@@ -20,3 +20,4 @@ public class UserRating {
         this.ratings = ratings;
     }
 }
+ 

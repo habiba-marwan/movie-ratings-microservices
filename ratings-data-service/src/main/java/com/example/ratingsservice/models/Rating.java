@@ -1,10 +1,12 @@
 package com.example.ratingsservice.models;
-
 import javax.persistence.*;
-@Entity
+
+@Entity //This class is a table in database
 @Table(name = "ratings")
+
 public class Rating {
 
+    //Primary key (auto-increment)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -17,9 +19,11 @@ public class Rating {
     
     private int rating;
 
+    //Required by JPA
     public Rating() {
     }
 
+    //Used when creating objects manually
     public Rating(String userId, String movieId, int rating) {
         this.userId = userId;
         this.movieId = movieId;

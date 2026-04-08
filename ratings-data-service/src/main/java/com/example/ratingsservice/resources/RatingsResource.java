@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/ratings")
+@RestController //A class that handles HTTP requests and returns JSON
+@RequestMapping("/ratings") //Base URL
+
 public class RatingsResource {
 
     @Autowired
-    private RatingRepository ratingRepository;
+    private RatingRepository ratingRepository; //Spring automatically creates an object of RatingRepository and injects it here (instead of new RatingRepository() ).
 
-    @GetMapping("/{userId}")
-    public UserRating getRatingsOfUser(@PathVariable String userId) {
+    @GetMapping("/{userId}") //HTTP method: GET
+    public UserRating getRatingsOfUser(@PathVariable String userId) { //@PathVariable takes value from the URL
 
         List<Rating> ratings = ratingRepository.findByUserId(userId);
 
