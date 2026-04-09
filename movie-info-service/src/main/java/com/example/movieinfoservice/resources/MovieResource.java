@@ -29,14 +29,6 @@ public class MovieResource {
 
     @RequestMapping("/{movieId}")
     public Movie getMovieInfo(@PathVariable("movieId") String movieId) {
-        // Get the movie info from TMDB
-        // final String url = "https://api.themoviedb.org/3/movie/" + movieId +
-        // "?api_key=" + apiKey;
-        // MovieSummary movieSummary = restTemplate.getForObject(url,
-        // MovieSummary.class);
-
-        // return new Movie(movieId, movieSummary.getTitle(),
-        // movieSummary.getOverview());
 
         // check MongoDB first
         Optional<MovieSummary> cachedMovie = movieRepo.findById(movieId);

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.trending";
+
+// The message defining the movie details
+message MovieInfo {
+  string movieId = 1;
+  string name = 2;
+  string description = 3;
+  int32 rating = 4;
+}
+
+// this is optional and in our case we don't need it
+// The request message (empty if no parameters are needed)
+message TrendingRequest {
+  int32 limit = 1; 
+}
+
+// The response containing the list of top movies
+message TrendingResponse {
+  repeated MovieInfo movies = 1;        // repeated for a list
+}
+
+// The actual service definition
+service TrendingService {
+  rpc GetTrendingMovies(TrendingRequest) returns (TrendingResponse);
+}

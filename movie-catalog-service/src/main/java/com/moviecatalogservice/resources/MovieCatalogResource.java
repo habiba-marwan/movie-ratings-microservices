@@ -7,10 +7,16 @@ import com.moviecatalogservice.models.UserRating;
 import com.moviecatalogservice.services.MovieInfoService;
 import com.moviecatalogservice.services.UserRatingService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.trending.TrendingServiceGrpc;
+import com.example.trending.TrendingRequest;
+import com.example.trending.TrendingResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,9 +33,12 @@ public class MovieCatalogResource {
 
     private final UserRatingService userRatingService;
 
+    @Autowired
+    private TrendingServiceGrpc.TrendingServiceBlockingStub trendingStub;
+
     public MovieCatalogResource(RestTemplate restTemplate,
-                                MovieInfoService movieInfoService,
-                                UserRatingService userRatingService) {
+            MovieInfoService movieInfoService,
+            UserRatingService userRatingService) {
 
         this.restTemplate = restTemplate;
         this.movieInfoService = movieInfoService;
@@ -40,6 +49,7 @@ public class MovieCatalogResource {
      * Makes a call to MovieInfoService to get movieId, name and description,
      * Makes a call to RatingsService to get ratings
      * Accumulates both data to create a MovieCatalog
+     * 
      * @param userId
      * @return CatalogItem that contains name, description and rating
      */
@@ -47,5 +57,19 @@ public class MovieCatalogResource {
     public List<CatalogItem> getCatalog(@PathVariable String userId) {
         List<Rating> ratings = userRatingService.getUserRating(userId).getRatings();
         return ratings.stream().map(movieInfoService::getCatalogItem).collect(Collectors.toList());
+    }
+
+    @RequestMapping("/trending")
+    public List<CatalogItem> getTrendingMovies() {
+        // Build the Request
+        TrendingRequest request = TrendingRequest.newBuilder().setLimit(10).build();
+
+        // Call the gRPC Service
+        TrendingResponse response = trendingStub.getTrendingMovies(request);
+
+        // Map the gRPC MovieInfo objects back to your CatalogItem model
+        return response.getMoviesList().stream()
+                .map(movie -> new CatalogItem(movie.getName(), movie.getDescription(), movie.getRating()))
+                .collect(Collectors.toList());
     }
 }
